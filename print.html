@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Les commun·es vécu·es — Impression</title>
+<style>
+@font-face { font-family: 'Resistance'; src: url('Resistance.otf') format('opentype'); }
+@font-face { font-family: 'SelfModern'; src: url('SelfModern-Regular.otf') format('opentype'); font-style: normal; }
+@font-face { font-family: 'SelfModern'; src: url('SelfModern-Italic.otf') format('opentype'); font-style: italic; }
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'SelfModern', Georgia, serif; background: #fff; }
+
+/* ── FORMAT A4 PORTRAIT ────────────────────────────────── */
+.page {
+  width: 210mm; min-height: 297mm;
+  position: relative; overflow: hidden;
+  background: white; margin: 0 auto;
+  page-break-after: always;
+}
+
+/* ── PRÉVISUALISATION ÉCRAN ────────────────────────────── */
+@media screen {
+  body { background: #ccc; padding: 20px; }
+  .page { box-shadow: 0 4px 20px rgba(0,0,0,0.3); margin-bottom: 24px; }
+  .screen-controls {
+    position: fixed; top: 20px; right: 20px; z-index: 999;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .screen-controls button {
+    font-family: 'Resistance', Georgia, serif; font-size: 14px;
+    padding: 10px 20px; border: none; border-radius: 20px;
+    cursor: pointer; transition: opacity 0.2s;
+  }
+  .btn-print-go { background: #0A0A08; color: white; }
+  .btn-back { background: white; color: #0A0A08; border: 1.5px solid #0A0A08; }
+  .btn-print-go:hover, .btn-back:hover { opacity: 0.7; }
+}
+
+@media print {
+  .screen-controls { display: none; }
+  body { background: white; padding: 0; }
+  .page { margin: 0; box-shadow: none; }
+}
+
+/* ================================================================
+   PAGE 1 — PORTRAIT : carte + photos positionnées + textes
+   ================================================================ */
+.page-1 {
+  padding: 14mm 12mm 10mm;
+  display: flex; flex-direction: column;
+}
+
+/* Tag typo haut gauche */
+.p1-typo-tag {
+  font-family: 'Resistance', Georgia, serif;
+  font-size: 13pt; border: 1.5px solid #0A0A08; border-radius: 20px;
+  padding: 4px 14px; display: inline-block; width: fit-content;
+  margin-bottom: 6mm;
+}
+
+/* Zone carte + photos */
+.p1-map-zone {
+  position: relative; flex: 1;
+  min-height: 170mm;
+}
+.p1-map-img {
+  width: 100%; height: 100%;
+  object-fit: contain; object-position: center;
+  filter: grayscale(100%) contrast(1.3) brightness(1.05);
+  display: block;
+}
+
+/* Photos posées sur la carte — positionnées en % */
+.p1-photo {
+  position: absolute;
+  object-fit: cover;
+  mix-blend-mode: multiply;
+  filter: grayscale(100%) contrast(1.2) brightness(0.88);
+}
+.p1-color-block {
+  position: absolute;
+  mix-blend-mode: multiply;
+  filter: saturate(1.4) contrast(1.1) brightness(0.85);
+}
+
+/* Noms de communes */
+.p1-commune-label {
+  position: absolute;
+  font-family: 'Resistance', Georgia, serif;
+  font-size: 5.5pt; color: #0A0A08; white-space: nowrap;
+  transform: translate(-50%, -50%);
+}
+
+/* Textes bas de page 1 */
+.p1-bottom {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 8mm; margin-top: 6mm; align-items: end;
+}
+.p1-big-text {
+  font-family: 'SelfModern', Georgia, serif;
+  font-style: italic; font-size: 22pt; line-height: 1.1; color: #0A0A08;
+}
+.p1-big-text strong {
+  font-family: 'Resistance', Georgia, serif;
+  font-style: normal; font-weight: normal; font-size: 24pt;
+}
+.p1-right-texts { display: flex; flex-direction: column; gap: 4mm; }
+.p1-desc-text {
+  font-family: 'SelfModern', Georgia, serif;
+  font-size: 8pt; color: #0A0A08; line-height: 1.5;
+}
+.p1-archive-text {
+  font-family: 'SelfModern', Georgia, serif;
+  font-size: 6pt; color: #0A0A08; line-height: 1.4;
+  text-transform: uppercase; letter-spacing: 0.05em; text-align: right;
+}
+
+/* ================================================================
+   PAGE 2 — INDEX GRILLE : toutes les photos de la typo
+   ================================================================ */
+.page-2 {
+  width: 210mm; min-height: 297mm;
+  padding: 14mm 12mm;
+  background: white;
+  page-break-after: always;
+}
+.p2-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 8mm;
+}
+.p2-logo-text {
+  font-family: 'Resistance', Georgia, serif;
+  font-size: 14pt; line-height: 1.0; color: #0A0A08;
+}
+.p2-typo-tag-header {
+  font-family: 'Resistance', Georgia, serif; font-size: 10pt;
+  border: 1.5px solid #0A0A08; border-radius: 20px;
+  padding: 3px 12px; display: inline-block;
+}
+
+/* Grille index */
+.p2-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4mm;
+}
+.p2-grid-item {
+  display: flex; flex-direction: column; gap: 1.5mm;
+  break-inside: avoid;
+}
+.p2-grid-photo {
+  width: 100%; aspect-ratio: 4/3;
+  object-fit: cover;
+  filter: grayscale(100%) contrast(1.2) brightness(0.88);
+  display: block;
+}
+.p2-grid-color {
+  width: 100%; aspect-ratio: 4/2;
+  mix-blend-mode: multiply;
+  filter: saturate(1.2) contrast(1.05);
+}
+.p2-grid-label {
+  font-family: 'SelfModern', Georgia, serif;
+  font-size: 6pt; color: #0A0A08; line-height: 1.4; font-style: italic;
+}
+.p2-grid-author {
+  font-family: 'SelfModern', Georgia, serif;
+  font-size: 5.5pt; color: #888; line-height: 1.3;
+}
+
+/* Footer page 2 */
+.p2-footer {
+  margin-top: 8mm; padding-top: 4mm;
+  border-top: 0.5px solid #ccc;
+  display: flex; justify-content: space-between; align-items: flex-end;
+}
+.p2-credits {
+  font-family: 'SelfModern', Georgia, serif;
+  font-size: 5pt; color: #888; line-height: 1.5;
+  text-transform: uppercase; letter-spacing: 0.04em;
+}
+.p2-logos { display: flex; gap: 4mm; align-items: center; }
+.p2-logos img { height: 7mm; width: auto; filter: grayscale(100%); }
+
+/* Lignes de coupe pointillées (visibles écran seulement) */
+@media screen {
+  .p2-cut-h { position: absolute; left: 60mm; right: 60mm; border-top: 1px dashed #ccc; pointer-events: none; }
+  .p2-cut-v { position: absolute; top: 0; bottom: 0; border-left: 1px dashed #ccc; pointer-events: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="screen-controls">
+  <button class="btn-print-go" onclick="window.print()">🖨 Imprimer</button>
+  <button class="btn-back" onclick="window.close()">← Retour</button>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     PAGE 1 — PORTRAIT
+════════════════════════════════════════════════════════ -->
+<div class="page page-1">
+
+  <div class="p1-typo-tag" id="p1-typo-tag">Les communs</div>
+
+  <div class="p1-map-zone" id="p1-map-zone">
+    <img src="fondvf.jpg" class="p1-map-img" alt="Carte" id="p1-map-img">
+    <!-- Les photos et labels communes sont injectés ici par JS -->
+  </div>
+
+  <div class="p1-bottom">
+    <div class="p1-big-text">
+      <em>Et pour vous,<br>qu'est-ce<br>que cette carte<br></em>
+      <strong>ne montre pas</strong><br>
+      <em>encore ?</em>
+    </div>
+    <div class="p1-right-texts">
+      <p class="p1-desc-text">Chaque récit déposé sur cette carte est un fragment du territoire tel qu'il est vécu, ressenti, habité. Ensemble, ils dessinent ce que les cartes ne montrent pas.</p>
+      <p class="p1-archive-text" id="p1-archive">CARTE GÉNÉRÉE LE <span id="p1-date"></span>.<br>ARCHIVE DU TERRITOIRE À CET INSTANT.<br>CHAQUE IMPRESSION EST UNE LECTURE PERSONNELLE.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     PAGE 2 — INDEX GRILLE
+════════════════════════════════════════════════════════ -->
+<div class="page page-2">
+  <div class="p2-header">
+    <div class="p2-logo-text">Les commun·es vécu·es</div>
+    <span class="p2-typo-tag-header" id="p2-typo-tag"></span>
+  </div>
+
+  <div class="p2-grid" id="p2-grid">
+    <!-- Injecté par JS -->
+  </div>
+
+  <div class="p2-footer">
+    <div class="p2-credits">
+      <p>Communauté de communes Lesneven Côte des Légendes · Fabrique Imaginaire</p>
+      <p>© eloïse corlosquet — Juin 2026 · lescommunes-vecues.fr</p>
+    </div>
+    <div class="p2-logos">
+      <img src="monogrammeelo.png" alt="" onerror="this.style.display='none'">
+      <img src="CLCL-Logo-V1-NOIR.png" alt="" onerror="this.style.display='none'">
+      <img src="logo_fabriqueimaginaire.jpg" alt="" onerror="this.style.display='none'">
+    </div>
+  </div>
+</div>
+
+<script>
+// ── DONNÉES passées depuis index.html via sessionStorage ──────────
+const typo   = sessionStorage.getItem('printTypo')   || 'communs';
+const typoLabel = { attaches:'Les attaches', marees:'Les marées', invisibles:'Les invisibles', communs:'Les communs' }[typo];
+const TYPO_COLORS = { attaches:'#E54564', marees:'#45A4E5', invisibles:'#DB84E5', communs:'#D37311' };
+
+// Données DEPOSITS (copiées depuis script.js — synchro manuelle si modif)
+const DEPOSITS = [
+  // ATTACHES
+  { x:57, y:52, typo:'attaches', photo:'marchelesneven.jpeg', lieu:'Lesneven', w:220, h:165 },
+  { x:57, y:55, typo:'attaches', photo:null, lieu:'Lesneven', w:180, h:135 },
+  { x:58, y:53, typo:'attaches', photo:null, lieu:'Lesneven', w:180, h:135 },
+  { x:55, y:54, typo:'attaches', photo:'footlesneven2.jpeg', lieu:'Lesneven', w:240, h:160 },
+  { x:59, y:57, typo:'attaches', photo:null, lieu:'Lesneven', w:180, h:135 },
+  { x:56, y:55, typo:'attaches', photo:'footlesneven.jpg', lieu:'Lesneven', w:190, h:280 },
+  { x:55, y:56, typo:'attaches', photo:null, lieu:'Lesneven', w:180, h:135 },
+  { x:56, y:45, typo:'attaches', photo:null, lieu:'Lesneven', w:200, h:150 },
+  { x:38, y:50, typo:'attaches', photo:null, lieu:'Plouider', w:200, h:150 },
+  // MAREES
+  { x:33, y:30, typo:'marees', photo:'croixgreve.jpeg', lieu:'Guissény', w:240, h:160 },
+  { x:60, y:33, typo:'marees', photo:null, lieu:'Goulven', w:180, h:135 },
+  { x:55, y:75, typo:'marees', photo:null, lieu:'Ploudaniel', w:200, h:150 },
+  { x:27, y:33, typo:'marees', photo:'plagevougo.jpeg', lieu:'Guissény', w:220, h:300 },
+  { x:54, y:22, typo:'marees', photo:'croixtemps.jpeg', lieu:'Brignogan-Plages', w:240, h:320 },
+  { x:28, y:32, typo:'marees', photo:null, lieu:'Guissény', w:220, h:160 },
+  { x:52, y:45, typo:'marees', photo:'coucheesoleilkernoues.jpeg', lieu:'Kernouës', w:220, h:160 },
+  { x:29, y:35, typo:'marees', photo:null, lieu:'Guissény', w:220, h:165 },
+  { x:36, y:52, typo:'marees', photo:null, lieu:'Kernilis', w:220, h:165 },
+  { x:60, y:35, typo:'marees', photo:null, lieu:'Goulven', w:200, h:150 },
+  // INVISIBLES
+  { x:65, y:54, typo:'invisibles', photo:'campagnesaintmeen.jpeg', lieu:'Saint-Méen', w:220, h:165 },
+  { x:57, y:21, typo:'invisibles', photo:'pharepontusval.jpeg', lieu:'Brignogan-Plages', w:190, h:280 },
+  { x:58, y:20, typo:'invisibles', photo:'Plage du phare - Plounéour.jpeg', lieu:'Brignogan-Plages', w:190, h:280 },
+  { x:58, y:24, typo:'invisibles', photo:null, lieu:'Brignogan-Plages', w:180, h:135 },
+  { x:52, y:53, typo:'invisibles', photo:null, lieu:'Le Folgoët', w:180, h:135 },
+  { x:53, y:48, typo:'invisibles', photo:'tictac.JPEG', lieu:'Kernouës', w:240, h:160 },
+  { x:64, y:36, typo:'invisibles', photo:'Fontaine de Saint-Goulven.jpg', lieu:'Goulven', w:240, h:160 },
+  { x:35, y:30, typo:'invisibles', photo:'Sentier Corps de garde - Guissény.jpeg', lieu:'Guissény', w:190, h:280 },
+  { x:47, y:22, typo:'invisibles', photo:null, lieu:'Kerlouan', w:240, h:160 },
+  { x:35, y:32, typo:'invisibles', photo:'Plage de Lerret - Guissény .jpeg', lieu:'Guissény', w:240, h:160 },
+  { x:51, y:47, typo:'invisibles', photo:'hortensia.jpeg', lieu:'Kernouës', w:220, h:165 },
+  { x:56, y:55, typo:'invisibles', photo:null, lieu:'Lesneven', w:180, h:135 },
+  // COMMUNS
+  { x:57, y:56, typo:'communs', photo:null, lieu:'Lesneven', w:180, h:135 },
+  { x:53, y:58, typo:'communs', photo:null, lieu:'Le Folgoët', w:180, h:135 },
+  { x:56, y:45, typo:'communs', photo:'nuitétoile2.JPG', lieu:'Le Folgoët', w:190, h:280 },
+  { x:55, y:53, typo:'communs', photo:null, lieu:'Le Folgoët', w:180, h:135 },
+  { x:53, y:52, typo:'communs', photo:'nuitdesétoiles.jpeg', lieu:'Le Folgoët', w:190, h:280 },
+  { x:52, y:50, typo:'communs', photo:'nuiétoile.JPG', lieu:'Le Folgoët', w:190, h:280 },
+  { x:51, y:57, typo:'communs', photo:'Archives pardon du folgoet.jpeg', lieu:'Le Folgoët', w:240, h:160 },
+  { x:27, y:35, typo:'communs', photo:'Plage - Guissény.jpeg', lieu:'Guissény', w:240, h:160 },
+  { x:56, y:55, typo:'communs', photo:null, lieu:'Lesneven', w:200, h:150 },
+  { x:58, y:54, typo:'communs', photo:null, lieu:'Lesneven', w:180, h:135 },
+  { x:53, y:24, typo:'communs', photo:'brocante.jpeg', lieu:'Brignogan', w:240, h:160 },
+  { x:50, y:44, typo:'communs', photo:null, lieu:'Kernouës', w:200, h:150 },
+  { x:53, y:48, typo:'communs', photo:null, lieu:'Saint-Frégant', w:240, h:160 },
+];
+
+// Noms de communes à afficher sur la carte page 1
+const COMMUNES = [
+  { label:'Plounéour-Brignogan', x:57, y:26 },
+  { label:'Guissény', x:27, y:34 },
+  { label:'Herlouan', x:46, y:30 },
+  { label:'Goulven', x:63, y:33 },
+  { label:'Kerlouan', x:36, y:28 },
+  { label:'Plouider', x:64, y:46 },
+  { label:'Saint-Frégant', x:48, y:47 },
+  { label:'Kernouës', x:52, y:51 },
+  { label:'Lesneven', x:58, y:57 },
+  { label:'Le Folgoët', x:52, y:61 },
+  { label:'Saint-Méen', x:70, y:60 },
+  { label:'Kernilis', x:39, y:59 },
+  { label:'Lanarvily', x:41, y:65 },
+  { label:'Trégarantec', x:58, y:67 },
+  { label:'Ploudaniel', x:52, y:74 },
+];
+
+// ── DATE ─────────────────────────────────────────────────────────
+const now = new Date();
+const jours = ['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'];
+const mois = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+document.getElementById('p1-date').textContent =
+  `${jours[now.getDay()]} ${now.getDate()} ${mois[now.getMonth()]} ${now.getFullYear()}`;
+
+// ── TAG TYPO ─────────────────────────────────────────────────────
+document.getElementById('p1-typo-tag').textContent = typoLabel;
+
+// ── PAGE 1 : photos sur la carte ─────────────────────────────────
+// La zone carte fait 100% de la largeur et ~170mm de haut
+// Les coordonnées x,y sont en % de l'image PNG (1024×1267)
+// On les mappe sur la zone carte print
+
+const mapZone = document.getElementById('p1-map-zone');
+const filtered = DEPOSITS.filter(d => d.typo === typo);
+const color = TYPO_COLORS[typo];
+const MAX_PX = 90; // taille max en px dans le print (zone ~170mm = ~643px @ 96dpi)
+
+// Ajouter les labels communes
+COMMUNES.forEach(c => {
+  const label = document.createElement('div');
+  label.className = 'p1-commune-label';
+  label.textContent = c.label;
+  label.style.left = c.x + '%';
+  label.style.top  = c.y + '%';
+  mapZone.appendChild(label);
+});
+
+// Ajouter les photos/aplats
+filtered.forEach(d => {
+  const el = document.createElement(d.photo ? 'img' : 'div');
+  if (d.photo) {
+    el.className = 'p1-photo';
+    el.src = d.photo; el.alt = '';
+    el.style.width  = Math.min(d.w * 0.38, MAX_PX) + 'px';
+    el.style.height = Math.min(d.h * 0.38, MAX_PX) + 'px';
+  } else {
+    el.className = 'p1-color-block';
+    el.style.backgroundColor = color;
+    el.style.width  = Math.min(d.w * 0.38, MAX_PX) + 'px';
+    el.style.height = Math.min(d.h * 0.38, MAX_PX) + 'px';
+  }
+  el.style.left = d.x + '%';
+  el.style.top  = d.y + '%';
+  el.style.transform = 'translate(-50%, -50%)';
+  mapZone.appendChild(el);
+});
+
+// ── PAGE 2 : grille index de tous les récits de la typo ─────────
+document.getElementById('p2-typo-tag').textContent = typoLabel;
+
+const grid = document.getElementById('p2-grid');
+
+filtered.forEach(d => {
+  const item = document.createElement('div');
+  item.className = 'p2-grid-item';
+
+  if (d.photo) {
+    const img = document.createElement('img');
+    img.src = d.photo; img.alt = ''; img.className = 'p2-grid-photo';
+    item.appendChild(img);
+  } else {
+    const block = document.createElement('div');
+    block.className = 'p2-grid-color';
+    block.style.backgroundColor = color;
+    item.appendChild(block);
+  }
+
+  if (d.lieu || d.author) {
+    const label = document.createElement('div');
+    label.className = 'p2-grid-label';
+    label.textContent = d.lieu || '';
+    item.appendChild(label);
+    if (d.author) {
+      const auth = document.createElement('div');
+      auth.className = 'p2-grid-author';
+      auth.textContent = '— ' + d.author;
+      item.appendChild(auth);
+    }
+  }
+
+  grid.appendChild(item);
+});
+</script>
+</body>
+</html>
